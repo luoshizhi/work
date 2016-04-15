@@ -40,7 +40,7 @@ while (<IN>){
 #	print "$id\n";
 	$seq=~s/\n//g if ($ARGV[2] ==1 );
 	if (exists $id{lc($id)}) {
-		print "$id{lc($id)}\n$seq\n";
+		print ">$id{lc($id)}\n$seq\n";
 	}
 }
 close IN;
