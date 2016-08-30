@@ -45,8 +45,8 @@ sub help
         Version : $ver
         function: ......
     Usage:
-        -out           <file>                         forced
-        -bed           <bed_file>                     forced
+        -out           <output file>                         forced
+        -bed           <bed_file>                            forced
         -block         <target_block_file>                   forced
         -target        <target_file>                  forced
         -aligns        <aligns_file>                  foeced
@@ -68,6 +68,7 @@ my %pos;my %target;my %block;my %list;
 open (BED,$bed) or die;
 while (<BED>) {
 	chomp;
+	s/\r//g;
 	my ($chr,$star,$end,$id)=split;
 	($star,$end)=sort {$a <=> $b}($star,$end);
 	@{$pos{$id}}=($chr,$star,$end);
@@ -76,15 +77,36 @@ close(BED);
 open(TARGET,$target_file) or die $!;
 while (<TARGET>) {
 	chomp;
+	s/\r//g;
 	s/\s+//g;
+	unless (exists $pos{$_}) {
+		print STDERR "WARNING:$_ not found\n";
+		next;
+	}
 	@{$list{$_}}=@{$pos{$_}};
 }
 close (TARGET);
 
+open (BLOCK,"$block_file") or die $!;
+open (TEMP_BLOCK,">./temp_block") or die $!;
+while (<BLOCK>){
+	chomp;
+	s/\r//g;
+	my @tmp=split;
+	foreach my $target_block(@tmp) {
+		if (exists $list{$target_block}) {
+			print TEMP_BLOCK "$_\n";
+		}
+	}
+}
+close BLOCK;
+close TEMP_BLOCK;
+
 my @array;
-open(BLOCK,$block_file) or die $!;
+open(BLOCK,"./temp_block") or die $!;
 while (<BLOCK>) {
 	chomp;
+	s/\r//g;
 	next if /^\#/;
 	next if /^\s*$/;
 	my (undef,@block_units)=split/\t+/,$_;
@@ -113,6 +135,7 @@ open (ALI,$aligns) or die $!;
 $/="## Alignment";
 while (<ALI>) {
 	chomp;
+	s/\r//g;
 	next if (/^\#/);
 	next if (/^\s*$/);
 	my ($head,@line)=split/\n/,$_;

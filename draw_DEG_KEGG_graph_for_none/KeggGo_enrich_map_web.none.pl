@@ -128,7 +128,7 @@ unless ($opts{func} eq "kegg")
 	################### GO distribution png #########
 	chdir $go_out;
 	
-	system "perl $Bin/gene_ontology_graph.pl -i $opts{i}/$go_list -i $opts{k}.GO.list.txt -mark All_Unigene -mark DEG_Unigene -o $go_out -k $opts{k}" ;                               #modified by sunhy  change to new script
+	system "perl $Bin/gene_ontology_graph.pl -i $opts{i}/$go_list -i $opts{k}.GO.list.txt -mark All_gene -mark Target_gene -o $go_out -k $opts{k}" ;                               #modified by sunhy  change to new script
 
 
 	#################### GO #########################

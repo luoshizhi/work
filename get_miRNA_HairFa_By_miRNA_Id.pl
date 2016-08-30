@@ -17,6 +17,7 @@ if (@ARGV<2) {
 	print "-2 : more line seq\n";
 	exit;
 }
+
 $ARGV[2] ||=1;
 open (IN,"$ARGV[0]") or die $!;
 my %id;
